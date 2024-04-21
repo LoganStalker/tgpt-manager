@@ -1,5 +1,7 @@
+import json
 import requests
-import config
+
+import app.config as config
 
 
 class BackendConnector:
@@ -9,7 +11,7 @@ class BackendConnector:
         self.base_url = f"http://{self.host}:{self.port}"
 
     def get_bots_list(self):
-        res = requests.get(f'{self.base_url}/bots')
+        res = requests.get(f'{self.base_url}/bots', headers={'Accept': 'application/json'})
         # [
         #   {
         #     'id': 1,
@@ -23,7 +25,7 @@ class BackendConnector:
         #     'active': True
         #   }
         # ]
-        return res.json()
+        return json.loads(res.json())
 
     def create_bot(self, data):
         requests.post(f'{self.base_url}/bots', json=data)
@@ -32,7 +34,8 @@ class BackendConnector:
         requests.delete(f'{self.base_url}/bots/{bot_id}')
 
     def start_bot(self, bot_id):
-        requests.post(f'{self.base_url}/bots/stop/{bot_id}')
+        requests.post(f'{self.base_url}/bots/start', json={'id': bot_id})
 
     def stop_bot(self, bot_id):
-        requests.post(f'{self.base_url}/bots/start/{bot_id}')
+        # implement the stopping procedure here
+        pass

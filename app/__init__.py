@@ -1,6 +1,6 @@
 import customtkinter as ctk
 
-from utils import BackendConnector
+from .utils import BackendConnector
 
 
 class MyTabView(ctk.CTkTabview):
@@ -81,7 +81,7 @@ class MyTabView(ctk.CTkTabview):
         tabview.grid(row=0, column=0, padx=15, pady=10, sticky="nsew")
 
         for bot in bots:
-            tab_name = f"{bot.bot_name}"
+            tab_name = f"{bot['id']}"
             tb = tabview.add(tab_name)
 
             rows = [
@@ -105,12 +105,12 @@ class MyTabView(ctk.CTkTabview):
             delete.grid(row=9, column=2, padx=3, pady=20)
 
             status = ctk.CTkLabel(
-                master=tb, text=bot.process_id and "Started" or "Stopped",
-                text_color=bot.process_id and "green" or "red",
+                master=tb, text=bot['process_id'] and "Started" or "Stopped",
+                text_color=bot['process_id'] and "green" or "red",
                 font=ctk.CTkFont(size=18))
             status.grid(row=9, column=1, padx=3, pady=20)
 
-            if bot.process_id:
+            if bot['process_id']:
                 stop = ctk.CTkButton(master=tb, text="Stop", command=lambda: stop_bot())
                 stop.grid(row=9, column=0, padx=3, pady=20)
             else:
@@ -140,8 +140,3 @@ class App(ctk.CTk):
         self.maxsize(800, 600)
         self.minsize(800, 600)
         self.title("Bots manager")
-
-
-if __name__ == "__main__":
-    app = App()
-    app.mainloop()

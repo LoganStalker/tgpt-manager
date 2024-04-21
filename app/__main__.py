@@ -1,6 +1,6 @@
 import argparse
 
-from utils import BackendConnector
+from .utils import BackendConnector
 
 
 def args_parser():
@@ -27,6 +27,5 @@ if __name__ == "__main__":
 
     if namespace.show:
         bots = connect.get_bots_list()
-
         for bot in bots:
             print(f"{bot['id']}) {bot['bot_name']}: active? - {bot['active']}")
