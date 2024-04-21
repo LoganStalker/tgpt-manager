@@ -1,14 +1,18 @@
+import os
+
 import json
 import requests
 
-import app.config as config
+from modconfig import Config
 
 
 class BackendConnector:
     def __init__(self):
-        self.host = config.BACKEND_HOST
-        self.port = config.BACKEND_PORT
-        self.base_url = f"http://{self.host}:{self.port}"
+        self.cfg = Config(f"app.config")
+        if os.path.exists("app/config/local.py"):
+            self.cfg.update_from_modules("app.config.local")
+
+        self.base_url = f"http://{self.cfg.BACKEND_HOST}:{self.cfg.BACKEND_PORT}"
 
     def get_bots_list(self):
         res = requests.get(f'{self.base_url}/bots', headers={'Accept': 'application/json'})
@@ -23,6 +27,10 @@ class BackendConnector:
         #     'openai_organization': 'xcvxcvxcfdfgdfg',
         #     'openai_assistant_id': 'asdasdasdasdasd',
         #     'active': True
+        #   },
+        #   {
+        #     'id': 2,
+        #     ...
         #   }
         # ]
         return json.loads(res.json())
