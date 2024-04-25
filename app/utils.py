@@ -16,7 +16,8 @@ class BackendConnector:
 
     def get_bots_list(self):
         res = requests.get(f'{self.base_url}/bots', headers={'Accept': 'application/json'})
-        # [
+        # EXAMPLE
+        # res = [
         #   {
         #     'id': 1,
         #     'bot_name': 'Bot1',
