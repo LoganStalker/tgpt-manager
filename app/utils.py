@@ -1,7 +1,7 @@
 import os
 
 import json
-import requests
+import httpx
 
 from modconfig import Config
 
@@ -12,10 +12,14 @@ class BackendConnector:
         if os.path.exists("app/config/local.py"):
             self.cfg.update_from_modules("app.config.local")
 
+        if os.environ.get("ENV") == "tests":
+            self.cfg.update_from_modules("app.config.tests")
+
         self.base_url = f"http://{self.cfg.BACKEND_HOST}:{self.cfg.BACKEND_PORT}"
+        self.client = httpx.Client()
 
     def get_bots_list(self):
-        res = requests.get(f'{self.base_url}/bots', headers={'Accept': 'application/json'})
+        res = self.client.get(f'{self.base_url}/bots', headers={'Accept': 'application/json'})
         # EXAMPLE
         # res = [
         #   {
@@ -34,16 +38,16 @@ class BackendConnector:
         #     ...
         #   }
         # ]
-        return json.loads(res.json())
+        return res.json()
 
     def create_bot(self, data):
-        requests.post(f'{self.base_url}/bots', json=data)
+        self.client.post(f'{self.base_url}/bots', json=data)
 
     def delete_bot(self, bot_id):
-        requests.delete(f'{self.base_url}/bots/{bot_id}')
+        self.client.delete(f'{self.base_url}/bots/{bot_id}')
 
     def start_bot(self, bot_id):
-        requests.post(f'{self.base_url}/bots/start', json={'id': bot_id})
+        self.client.post(f'{self.base_url}/bots/start', json={'id': bot_id})
 
     def stop_bot(self, bot_id):
         # implement the stopping procedure here

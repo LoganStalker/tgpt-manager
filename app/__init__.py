@@ -119,6 +119,7 @@ class MyTabView(ctk.CTkTabview):
 
         def bot_delete():
             # delete bot here
+            self.conn.delete_bot(tabview.get())
             self.show_bots()
             self.update()
 
